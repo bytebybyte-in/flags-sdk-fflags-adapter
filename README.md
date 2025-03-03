@@ -18,13 +18,13 @@ const fflagsAdapter = createFFlagsAdapter({
   groupName: "frontend",
 });
 
-const fflags = flag('beta', {
-  key: 'beta',
-  adapter: fflagsAdapter,
-  defaultValue: false,
+export const beta = flag<boolean, { targetingKey: string }>({
+  key: "beta",
   identify: () => ({
     targetingKey: "tushar@fflags.com",
   }),
+  adapter: fflagsAdapter(),
+  defaultValue: false,
 });
 ```
 
