@@ -1,10 +1,11 @@
 import type { Adapter } from "flags";
 import type { EvaluationContext } from "@openfeature/server-sdk";
-import { OFREPApi } from "@openfeature/ofrep-core";
-
-type Flags = {
-  [key: string]: boolean | number | string | null;
-};
+import {
+  OFREPApi,
+  type EvaluationFlagValue,
+  isEvaluationSuccessResponse,
+  isEvaluationFailureResponse,
+} from "@openfeature/ofrep-core";
 
 export type FFlagsAdapterOptions = {
   apiKey: string;
@@ -12,9 +13,7 @@ export type FFlagsAdapterOptions = {
   groupName: string;
 };
 
-export function createFFlagsAdapter<AppFlags extends Flags = Flags>(
-  options: FFlagsAdapterOptions,
-) {
+export function createFFlagsAdapter(options: FFlagsAdapterOptions) {
   const { apiKey, orgId, groupName } = options;
 
   if (typeof apiKey !== "string") {
@@ -39,7 +38,7 @@ export function createFFlagsAdapter<AppFlags extends Flags = Flags>(
   });
 
   return function adapter<
-    ValueType,
+    ValueType extends EvaluationFlagValue = EvaluationFlagValue,
     EntitiesType extends EvaluationContext = EvaluationContext,
   >(): Adapter<ValueType, EntitiesType> {
     return {
@@ -51,12 +50,23 @@ export function createFFlagsAdapter<AppFlags extends Flags = Flags>(
           targetingKey: undefined,
         } as EntitiesType;
       },
-      async decide({ key, entities }) {
-        const flag = await ofrepApi.postEvaluateFlag(key, {
+      async decide({ key, entities }): Promise<ValueType> {
+        const response = await ofrepApi.postEvaluateFlag(key, {
           context: entities,
         });
+        if (!response) {
+          throw new Error(`FFlags: Flag ${key} could not be found`);
+        }
+        const value = response.value;
+        if (isEvaluationSuccessResponse(value)) {
+          return value.value as ValueType; // Cast the response value to ValueType
+        }
 
-        return {} as ValueType;
+        if (isEvaluationFailureResponse(value)) {
+          throw new Error(`FFlags: Flag ${key} could not be evaluated`);
+        }
+
+        throw new Error(`FFlags: Flag ${key} could not be evaluated`);
       },
     };
   };

@@ -1,1 +1,1 @@
-# nextjs-fflags
+# flags-sdk-fflags-adapter
