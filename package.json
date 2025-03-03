@@ -1,0 +1,30 @@
+{
+  "name": "flags-sdk-fflags-adapter",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "description": "",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "flags": "^3.1.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@openfeature/ofrep-core": "^1.0.0",
+    "@openfeature/server-sdk": "^1.17.1"
+  },
+  "peerDependencies": {
+    "flags": ">=3.1.1"
+  }
+}
