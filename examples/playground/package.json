@@ -11,7 +11,7 @@
   "dependencies": {
     "flags": "^3.1.1",
     "next": "15.2.0",
-    "flags-sdk-fflags-adapter": "workspace:*",
+    "@bytebybyte-in/flags-sdk-fflags-adapter": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

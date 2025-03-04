@@ -1,5 +1,5 @@
-import { flag } from "flags/next";
-import { createFFlagsAdapter } from "flags-sdk-fflags-adapter";
+import { dedupe, flag } from "flags/next";
+import { createFFlagsAdapter } from "@bytebybyte-in/flags-sdk-fflags-adapter";
 
 const adapter = createFFlagsAdapter({
   orgId: "7655eaa6-9aaabd832",
@@ -7,11 +7,13 @@ const adapter = createFFlagsAdapter({
   groupName: "frontend",
 });
 
+const identify = dedupe(() => ({
+  targetingKey: "tushar@fflags.com",
+}));
+
 export const beta = flag<boolean, { targetingKey: string }>({
   key: "beta",
-  identify: () => ({
-    targetingKey: "tushar@fflags.com",
-  }),
+  identify,
   adapter: adapter(),
   defaultValue: false,
 });

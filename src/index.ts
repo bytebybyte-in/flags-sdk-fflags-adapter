@@ -46,9 +46,7 @@ export function createFFlagsAdapter(options: FFlagsAdapterOptions) {
         return Promise.resolve();
       },
       identify: (): EntitiesType => {
-        return {
-          targetingKey: undefined,
-        } as EntitiesType;
+        return {} as EntitiesType;
       },
       async decide({ key, entities }): Promise<ValueType> {
         const response = await ofrepApi.postEvaluateFlag(key, {
